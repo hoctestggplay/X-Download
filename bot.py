@@ -1,14 +1,16 @@
-import telebot
 import os
+import telebot
 import yt_dlp
 import tempfile
 from telebot.types import InputFile
 
-TOKEN = os.getenv("BOT_TOKEN")
-if not TOKEN:
-    raise RuntimeError("❌ BOT_TOKEN chưa được set trong Railway!")
+def get_token():
+    TOKEN = os.getenv("BOT_TOKEN")
+    if not TOKEN:
+        raise RuntimeError("❌ BOT_TOKEN chưa được set trong Railway!")
+    return TOKEN
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(get_token())  # Chỉ đọc token khi runtime
 
 def is_twitter_link(text: str):
     if not text:
@@ -63,3 +65,4 @@ def fallback(message):
 
 print("🚀 Bot đang chạy bằng yt-dlp...")
 bot.infinity_polling(skip_pending=True)
+
