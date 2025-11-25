@@ -1,27 +1,19 @@
-import os
 import telebot
 import yt_dlp
 import tempfile
+import os
 from telebot.types import InputFile
 
-def get_token():
-    TOKEN = os.getenv("BOT_TOKEN")
-    if not TOKEN:
-        raise RuntimeError("❌ BOT_TOKEN chưa được set trong Railway!")
-    return TOKEN
-
-bot = telebot.TeleBot(get_token())  # Chỉ đọc token khi runtime
+# Ghi thẳng token Telegram
+TOKEN = "8589085563:AAGV_FToLYlTVBpMWBzs_JAl5rnYbKgeRvc"
+bot = telebot.TeleBot(TOKEN)
 
 def is_twitter_link(text: str):
     if not text:
         return False
     return "twitter.com" in text or "x.com" in text
 
-
 def download_video(url: str):
-    """
-    Tải video Twitter bằng yt-dlp → trả về path file video mp4
-    """
     temp_dir = tempfile.mkdtemp()
     output_path = os.path.join(temp_dir, "video.mp4")
 
@@ -37,7 +29,6 @@ def download_video(url: str):
         ydl.download([url])
 
     return output_path
-
 
 @bot.message_handler(func=lambda m: is_twitter_link(m.text if m.text else ""))
 def handle_twitter_video(message):
@@ -57,12 +48,9 @@ def handle_twitter_video(message):
         bot.reply_to(message, f"❌ Lỗi tải video!")
         print("ERROR:", e)
 
-
 @bot.message_handler(func=lambda m: True)
 def fallback(message):
     bot.reply_to(message, "Gửi link Twitter/X có video để mình tải cho bạn 👍")
 
-
 print("🚀 Bot đang chạy bằng yt-dlp...")
 bot.infinity_polling(skip_pending=True)
-
